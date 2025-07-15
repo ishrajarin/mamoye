@@ -1,15 +1,19 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../theme/app_colors.dart';
 import 'package:mamoyee/screens/chatbox_screen.dart';
-import 'package:mamoyee/screens/diet_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final double pregnancyProgress = 0.65;
   final int currentWeek = 26;
   final int totalWeeks = 40;
   final String fetusUpdate = "Your baby is about the size of a zucchini. Their eyes are starting to open!";
+
+  final List<String> dailyTips = [
+    "Stay hydrated by drinking at least 8 glasses of water today.",
+    "Remember to take your prenatal vitamins.",
+    "Try some gentle stretching exercises for better circulation.",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +44,13 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 36,
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'),
+                      backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80'),
                     ),
                     SizedBox(height: 12),
-                    Text(
-                      'Nila',
-                      style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
+                    Text('Nila',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -73,7 +77,8 @@ class HomeScreen extends StatelessWidget {
               Divider(color: Colors.white54, thickness: 1, indent: 16, endIndent: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text('Settings', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                child: Text('Settings',
+                    style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
               ),
               _buildDrawerItem(Icons.settings, 'Settings', () {
                 Navigator.pop(context);
@@ -90,14 +95,10 @@ class HomeScreen extends StatelessWidget {
               Divider(color: Colors.white54, thickness: 1, indent: 16, endIndent: 16),
               _buildDrawerItem(Icons.logout, 'Logout', () {
                 Navigator.pop(context);
-                // Add logout logic here if needed
               }),
               SizedBox(height: 24),
               Center(
-                child: Text(
-                  'Version 1.0.0',
-                  style: TextStyle(color: Colors.white54, fontSize: 12),
-                ),
+                child: Text('Version 1.0.0', style: TextStyle(color: Colors.white54, fontSize: 12)),
               ),
               SizedBox(height: 16),
             ],
@@ -120,20 +121,34 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  Builder(
-                    builder: (context) => IconButton(
-                      icon: Icon(Icons.menu, color: Colors.white),
-                      onPressed: () => Scaffold.of(context).openDrawer(),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Builder(
+                        builder: (context) => IconButton(
+                          icon: Icon(Icons.menu, color: Colors.white),
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.notifications_none, color: Colors.white),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/notifications');
+                        },
+                      ),
+                    ],
                   ),
                   Text(
                     "Mamoyee",
-                    style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Icon(Icons.notifications_none, color: Colors.white),
                 ],
               ),
               SizedBox(height: 8),
@@ -148,7 +163,7 @@ class HomeScreen extends StatelessWidget {
                   decoration: InputDecoration(
                     isDense: true,
                     hintText: 'Search articles, tips, etc.',
-                    prefixIcon: const Icon(Icons.search),
+                    prefixIcon: Icon(Icons.search),
                     filled: true,
                     fillColor: Colors.white,
                     contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -170,16 +185,15 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Pregnancy Progress", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                Text("Pregnancy Progress",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 SizedBox(height: 16),
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 2))
-                    ],
+                    boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 2))],
                   ),
                   child: Row(
                     children: [
@@ -187,10 +201,8 @@ class HomeScreen extends StatelessWidget {
                         radius: 70.0,
                         lineWidth: 10.0,
                         percent: pregnancyProgress,
-                        center: Text(
-                          "${(pregnancyProgress * 100).toStringAsFixed(0)}%",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
+                        center: Text("${(pregnancyProgress * 100).toStringAsFixed(0)}%",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         progressColor: AppColors.purple,
                         backgroundColor: AppColors.pink.withOpacity(0.2),
                         circularStrokeCap: CircularStrokeCap.round,
@@ -200,20 +212,97 @@ class HomeScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("You are $currentWeek weeks pregnant", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                            Text("You are $currentWeek weeks pregnant",
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                             SizedBox(height: 6),
-                            Text("${totalWeeks - currentWeek} weeks to go", style: TextStyle(color: AppColors.lightText)),
+                            Text("${totalWeeks - currentWeek} weeks to go",
+                                style: TextStyle(color: AppColors.lightText)),
                           ],
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.edit, color: AppColors.purple),
-                        onPressed: () {},
-                      )
+                      IconButton(icon: Icon(Icons.edit, color: AppColors.purple), onPressed: () {}),
                     ],
                   ),
                 ),
                 SizedBox(height: 24),
+
+                // --- Daily Tips Section ---
+                Text("Daily Tips",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                SizedBox(height: 12),
+                SizedBox(
+                  height: 120,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: dailyTips.length,
+                    separatorBuilder: (_, __) => SizedBox(width: 12),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: 280,
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [AppColors.purple, AppColors.pink],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 6)],
+                        ),
+                        child: Center(
+                          child: Text(
+                            dailyTips[index],
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                SizedBox(height: 24),
+
+                // --- Upcoming Appointment Card ---
+                Text("Upcoming Appointment",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                SizedBox(height: 12),
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/appointments'),
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 2))],
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.event_available, color: AppColors.purple, size: 36),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Dr. Smith - 15th July, 3:00 PM",
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                              SizedBox(height: 4),
+                              Text("Obstetrics & Gynecology",
+                                  style: TextStyle(color: AppColors.lightText)),
+                            ],
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios, color: AppColors.purple, size: 16),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 24),
+
+                // --- Quick Access Grid Buttons ---
                 LayoutBuilder(
                   builder: (context, constraints) {
                     int crossAxisCount = constraints.maxWidth > 600 ? 4 : 3;
@@ -226,15 +315,15 @@ class HomeScreen extends StatelessWidget {
                       children: [
                         _HomeButton(label: 'Today\'s Q&A', icon: Icons.question_answer, route: '/qa'),
                         _HomeButton(label: 'My Mood', icon: Icons.emoji_emotions, route: '/mood'),
-                        _HomeButton(label: 'My Diet', icon: Icons.fastfood, route: '/diet'), // Updated route here
-                        _HomeButton(label: 'Appointments', icon: Icons.event, route: '/appoinments'),
+                        _HomeButton(label: 'My Diet', icon: Icons.fastfood, route: '/diet'),
+                        _HomeButton(label: 'Appointments', icon: Icons.event, route: '/appointments'),
                         _HomeButton(label: 'Meditation', icon: Icons.self_improvement, route: '/meditation'),
                         _HomeButton(label: 'Diary', icon: Icons.book, route: '/diary'),
-
                       ],
                     );
                   },
                 ),
+
                 SizedBox(height: 24),
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -252,9 +341,14 @@ class HomeScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Week $currentWeek", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
+                            Text("Week $currentWeek",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.white)),
                             SizedBox(height: 8),
-                            Text(fetusUpdate, style: TextStyle(fontSize: 14, color: Colors.white)),
+                            Text(fetusUpdate,
+                                style: TextStyle(fontSize: 14, color: Colors.white)),
                           ],
                         ),
                       ),
@@ -267,10 +361,10 @@ class HomeScreen extends StatelessWidget {
                           width: 80,
                           fit: BoxFit.cover,
                         ),
-                      )
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -329,7 +423,7 @@ class _HomeButton extends StatelessWidget {
           children: [
             Icon(icon, color: Colors.white, size: 28),
             SizedBox(height: 6),
-            Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.white))
+            Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 14, color: Colors.white)),
           ],
         ),
       ),

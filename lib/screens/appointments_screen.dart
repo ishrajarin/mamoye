@@ -62,14 +62,14 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
   String selectedCategory = 'General Physician';
 
-  // Function to handle category selection
+
   void selectCategory(String category) {
     setState(() {
       selectedCategory = category;
     });
   }
 
-  // Function to build doctor list for the selected category
+
   Widget buildDoctorList() {
     final selectedDoctors = doctors[selectedCategory] ?? [];
 
