@@ -3,7 +3,7 @@ import 'package:mamoyee/screens/appointments_screen.dart';
 import 'package:mamoyee/screens/q&a_screen.dart';
 import 'onboarding_Screens/onboarding_screen1.dart';
 import 'screens/home_screen.dart';
-import 'screens/meditation_screen.dart';
+import 'package:mamoyee/meditation/meditation_screen.dart';
 import 'screens/breathing_screen.dart';
 import 'screens/diary_screen.dart';
 import 'screens/profile_screen.dart';
