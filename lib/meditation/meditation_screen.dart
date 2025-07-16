@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:mamoyee/meditation/music_player_screen.dart';
 
 class MeditationScreen extends StatefulWidget {
   const MeditationScreen({Key? key}) : super(key: key);
@@ -14,41 +15,39 @@ class _MeditationScreenState extends State<MeditationScreen> {
       'title': 'Gentle Morning',
       'color': Colors.brown[100],
       'image': 'assets/images/gentle_morning.jpg',
-      'audio': 'assets/gentle_morning.mp3', // Full asset path
+      'audio': 'audio/gentle_morning.mp3',  // <-- no 'assets/' prefix here
     },
     {
       'title': 'Peaceful Lake',
       'color': Colors.lightBlue[100],
       'image': 'assets/images/peaceful_lake.jpg',
-      'audio': 'assets/peaceful_lake.mp3',
+      'audio': 'audio/peaceful_lake.mp3',
     },
     {
       'title': 'Sunrise',
       'color': Colors.pink[100],
       'image': 'assets/images/sunrise.jpg',
-      'audio': 'assets/sunrise.mp3',
+      'audio': 'audio/sunrise.mp3',
     },
     {
       'title': 'Soft Piano',
       'color': Colors.purple[100],
       'image': 'assets/images/soft_piano.jpg',
-      'audio': 'assets/soft_piano.mp3',
+      'audio': 'audio/soft_piano.mp3',
     },
     {
       'title': 'Heaven',
       'color': Colors.blue[100],
       'image': 'assets/images/heaven.jpg',
-      'audio': 'assets/heaven.mp3',
+      'audio': 'audio/heaven.mp3',
     },
     {
       'title': 'Perfect Rain',
       'color': Colors.green[100],
       'image': 'assets/images/perfect_rain.jpg',
-      'audio': 'assets/perfect_rain.mp3',
+      'audio': 'audio/perfect_rain.mp3',
     },
   ];
-
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   void navigateToPlayer(Map<String, dynamic> track) {
     Navigator.push(
@@ -57,17 +56,11 @@ class _MeditationScreenState extends State<MeditationScreen> {
         builder: (_) => MusicPlayerScreen(
           title: track['title'],
           imageUrl: track['image'],
-          audioUrl: track['audio'], // full asset path passed here
+          audioUrl: track['audio'],
           color: track['color'],
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
   }
 
   @override
@@ -146,146 +139,5 @@ class _MeditationScreenState extends State<MeditationScreen> {
         ],
       ),
     );
-  }
-}
-
-class MusicPlayerScreen extends StatefulWidget {
-  final String title;
-  final String imageUrl;
-  final String audioUrl;
-  final Color color;
-
-  const MusicPlayerScreen({
-    super.key,
-    required this.title,
-    required this.imageUrl,
-    required this.audioUrl,
-    required this.color,
-  });
-
-  @override
-  State<MusicPlayerScreen> createState() => _MusicPlayerScreenState();
-}
-
-class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
-  late AudioPlayer _player;
-  bool isPlaying = false;
-  Duration position = Duration.zero;
-  Duration duration = const Duration(seconds: 60);
-
-  @override
-  void initState() {
-    super.initState();
-    _player = AudioPlayer();
-    _initPlayer();
-  }
-
-  void _initPlayer() async {
-    await _player.setSource(AssetSource(widget.audioUrl));
-    _player.onDurationChanged.listen((d) {
-      setState(() {
-        duration = d;
-      });
-    });
-
-    _player.onPositionChanged.listen((p) {
-      setState(() {
-        position = p;
-      });
-    });
-
-    _player.onPlayerComplete.listen((event) {
-      setState(() {
-        isPlaying = false;
-        position = Duration.zero;
-      });
-    });
-
-    _playAudio();
-  }
-
-  void _playAudio() async {
-    await _player.resume();
-    setState(() {
-      isPlaying = true;
-    });
-  }
-
-  void _pauseAudio() async {
-    await _player.pause();
-    setState(() {
-      isPlaying = false;
-    });
-  }
-
-  @override
-  void dispose() {
-    _player.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(widget.title),
-        backgroundColor: widget.color,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.asset(widget.imageUrl, height: 250),
-            ),
-            const SizedBox(height: 30),
-            Text(
-              widget.title,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-            const SizedBox(height: 30),
-            Slider(
-              activeColor: widget.color,
-              inactiveColor: widget.color.withOpacity(0.3),
-              min: 0,
-              max: duration.inSeconds.toDouble(),
-              value: position.inSeconds.toDouble().clamp(0, duration.inSeconds.toDouble()),
-              onChanged: (value) {
-                _player.seek(Duration(seconds: value.toInt()));
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(_formatDuration(position)),
-                Text(_formatDuration(duration)),
-              ],
-            ),
-            const SizedBox(height: 30),
-            IconButton(
-              icon: Icon(
-                isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
-                size: 64,
-                color: widget.color,
-              ),
-              onPressed: () {
-                isPlaying ? _pauseAudio() : _playAudio();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _formatDuration(Duration d) {
-    return "${d.inMinutes}:${(d.inSeconds % 60).toString().padLeft(2, '0')}";
   }
 }

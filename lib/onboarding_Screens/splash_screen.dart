@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mamoyee/onboarding_Screens/onboarding_screen1.dart';
+import 'package:mamoyee/theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -10,18 +10,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  startTimer() async {
-    Timer(const Duration(seconds: 5), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const OnboardingScreen1()),
-      );
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    startTimer();
+    Timer(const Duration(seconds: 5), () {
+      Navigator.pushReplacementNamed(context, '/onboarding1');
+    });
   }
 
   @override
@@ -38,14 +32,30 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 180,
             ),
             const SizedBox(height: 15),
-            const Text(
-              "Maamoyee",
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
+
+            // Gradient Text Here
+            ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [
+                  AppColors.primary,
+                  AppColors.secondary,
+                  AppColors.pink,
+                  AppColors.purple,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ).createShader(bounds),
+              child: const Text(
+                "Maamoyee",
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.5,
+                  color: Colors.white, // important for shader mask
+                ),
               ),
             ),
+
             const SizedBox(height: 8),
             const Text(
               "Your postpartum care companion",
@@ -57,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 25),
             const CircularProgressIndicator(
-              color: Colors.teal,
+              color: AppColors.primary,
               strokeWidth: 2.5,
             ),
           ],

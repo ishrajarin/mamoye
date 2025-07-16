@@ -23,7 +23,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
   late AudioPlayer _player;
   bool isPlaying = false;
   Duration position = Duration.zero;
-  Duration duration = const Duration(seconds: 60); // Default if not fetched
+  Duration duration = Duration.zero;
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     _initPlayer();
   }
 
-  void _initPlayer() async {
+  Future<void> _initPlayer() async {
     await _player.setSource(AssetSource(widget.audioUrl));
     _player.onDurationChanged.listen((d) {
       setState(() {
@@ -46,7 +46,7 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
       });
     });
 
-    _player.onPlayerComplete.listen((event) {
+    _player.onPlayerComplete.listen((_) {
       setState(() {
         isPlaying = false;
         position = Duration.zero;
@@ -56,14 +56,14 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     _playAudio();
   }
 
-  void _playAudio() async {
+  Future<void> _playAudio() async {
     await _player.resume();
     setState(() {
       isPlaying = true;
     });
   }
 
-  void _pauseAudio() async {
+  Future<void> _pauseAudio() async {
     await _player.pause();
     setState(() {
       isPlaying = false;
@@ -76,10 +76,15 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     super.dispose();
   }
 
+  String _formatDuration(Duration d) {
+    String minutes = d.inMinutes.toString().padLeft(2, '0');
+    String seconds = (d.inSeconds % 60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: widget.color,
@@ -97,7 +102,10 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
             Text(
               widget.title,
               style: const TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+              ),
             ),
             const SizedBox(height: 30),
             Slider(
@@ -132,9 +140,5 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
         ),
       ),
     );
-  }
-
-  String _formatDuration(Duration d) {
-    return "${d.inMinutes}:${(d.inSeconds % 60).toString().padLeft(2, '0')}";
   }
 }
